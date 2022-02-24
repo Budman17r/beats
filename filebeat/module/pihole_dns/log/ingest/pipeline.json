@@ -1,3 +1,4 @@
+GET _ingest/processor/grok?ecs_compatibility=v1
 POST /_ingest/pipeline/_simulate
 {
   "pipeline": {
@@ -25,11 +26,17 @@ POST /_ingest/pipeline/_simulate
       {
         "grok": {
           "field": "log.original",
-          "patterns": ["""%{INT:serial}"""],
+          "patterns": [
+            "%{PIHOLEDNSLOGLINE}"
+          ],
           "pattern_definitions": {
-            
+            "PIHOLEDNSLOGLINE": """%{INT:serial}\s+%{IP:source.ip}/%{INT:source.port}\s+%{PIHOLEDNSRESPONSE:dns.op_code}\s+%{GREEDYDATA:dns.question.name}\s(to|from|is)\s""",
+            "PIHOLEDNSRESPONSE": """reply|query\[.*?\]|forwarded|cached|gravity\sblocked""",
+            "PIHOLERESOLVED": """%{PIHOLECNAME:dns.answers.name}|%{IP:dns.resolved_ip""",
+            "PIHOLECNAME": """<CNAME>"""
           },
-          "ecs_compatibility": "v1"
+          "ecs_compatibility": "v1",
+          "trace_match": true
         }
       },
       {
@@ -104,7 +111,622 @@ POST /_ingest/pipeline/_simulate
       "_source": {
         "message": "Feb 24 00:00:59 dnsmasq[23417]: 14771 192.168.100.179/56135 gravity blocked scribe.logs.roku.com is 0.0.0.0"
       }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:49:57 dnsmasq[2042]: 34417 192.168.100.126/4096 cached d2qgwlspr10pij.cloudfront.net is 54.230.19.93"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:49:57 dnsmasq[2042]: 34417 192.168.100.126/4096 cached d2qgwlspr10pij.cloudfront.net is 54.230.19.120"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:49:57 dnsmasq[2042]: 34417 192.168.100.126/4096 cached d2qgwlspr10pij.cloudfront.net is 54.230.19.27"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:49:57 dnsmasq[2042]: 34417 192.168.100.126/4096 cached d2qgwlspr10pij.cloudfront.net is 54.230.19.66"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:49:57 dnsmasq[2042]: 34418 192.168.100.179/39054 query[A] scribe.logs.roku.com from 192.168.100.179"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:49:57 dnsmasq[2042]: 34418 192.168.100.179/39054 gravity blocked scribe.logs.roku.com is 0.0.0.0"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:00 dnsmasq[2042]: 34419 192.168.100.63/4096 query[A] api.flair.co from 192.168.100.63"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:00 dnsmasq[2042]: 34419 192.168.100.63/4096 cached api.flair.co is <CNAME>"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:00 dnsmasq[2042]: 34419 192.168.100.63/4096 cached flair-alb-prod-1666541247.us-east-1.elb.amazonaws.com is 34.228.95.147"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:00 dnsmasq[2042]: 34419 192.168.100.63/4096 cached flair-alb-prod-1666541247.us-east-1.elb.amazonaws.com is 54.152.59.183"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:01 dnsmasq[2042]: 34420 192.168.50.245/60698 query[AAAA] mqtt.c10r.facebook.com from 192.168.50.245"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:01 dnsmasq[2042]: 34420 192.168.50.245/60698 forwarded mqtt.c10r.facebook.com to 8.8.8.8"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:01 dnsmasq[2042]: 34421 192.168.50.245/61114 query[A] mqtt.c10r.facebook.com from 192.168.50.245"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:01 dnsmasq[2042]: 34421 192.168.50.245/61114 forwarded mqtt.c10r.facebook.com to 8.8.8.8"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:02 dnsmasq[2042]: 34420 192.168.50.245/60698 reply mqtt.c10r.facebook.com is 2a03:2880:f027:e:face:b00c:0:8e"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:02 dnsmasq[2042]: 34421 192.168.50.245/61114 reply mqtt.c10r.facebook.com is 157.240.2.15"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:02 dnsmasq[2042]: 34422 192.168.50.245/61714 query[AAAA] chat-e2ee-mini.c10r.facebook.com from 192.168.50.245"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:02 dnsmasq[2042]: 34422 192.168.50.245/61714 forwarded chat-e2ee-mini.c10r.facebook.com to 8.8.8.8"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:02 dnsmasq[2042]: 34423 192.168.50.245/60699 query[A] chat-e2ee-mini.c10r.facebook.com from 192.168.50.245"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:02 dnsmasq[2042]: 34423 192.168.50.245/60699 forwarded chat-e2ee-mini.c10r.facebook.com to 8.8.8.8"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:02 dnsmasq[2042]: 34422 192.168.50.245/61714 reply chat-e2ee-mini.c10r.facebook.com is 2a03:2880:f127:81:face:b00c:0:38d9"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:02 dnsmasq[2042]: 34423 192.168.50.245/60699 reply chat-e2ee-mini.c10r.facebook.com is 157.240.2.33"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:02 dnsmasq[2042]: 34424 192.168.50.245/60574 query[AAAA] aws.duplex.snapchat.com from 192.168.50.245"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:02 dnsmasq[2042]: 34424 192.168.50.245/60574 forwarded aws.duplex.snapchat.com to 8.8.8.8"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:02 dnsmasq[2042]: 34425 192.168.50.245/61788 query[A] aws.duplex.snapchat.com from 192.168.50.245"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:02 dnsmasq[2042]: 34425 192.168.50.245/61788 forwarded aws.duplex.snapchat.com to 8.8.8.8"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:02 dnsmasq[2042]: 34424 192.168.50.245/60574 reply aws.duplex.snapchat.com is <CNAME>"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:02 dnsmasq[2042]: 34424 192.168.50.245/60574 reply aws.duplex.sc-gw.com is <CNAME>"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:02 dnsmasq[2042]: 34424 192.168.50.245/60574 reply us-east1-aws.duplex.sc-gw.com is NODATA-IPv6"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:02 dnsmasq[2042]: 34426 192.168.50.245/52067 query[AAAA] us-east1-aws.duplex.sc-gw.com from 192.168.50.245"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:02 dnsmasq[2042]: 34426 192.168.50.245/52067 cached us-east1-aws.duplex.sc-gw.com is NODATA-IPv6"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:02 dnsmasq[2042]: 34425 192.168.50.245/61788 reply aws.duplex.snapchat.com is <CNAME>"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:02 dnsmasq[2042]: 34425 192.168.50.245/61788 reply aws.duplex.sc-gw.com is <CNAME>"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:02 dnsmasq[2042]: 34425 192.168.50.245/61788 reply us-east1-aws.duplex.sc-gw.com is 34.228.127.240"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:03 dnsmasq[2042]: 34427 192.168.100.231/4096 query[A] api.flair.co from 192.168.100.231"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:03 dnsmasq[2042]: 34427 192.168.100.231/4096 cached api.flair.co is <CNAME>"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:03 dnsmasq[2042]: 34427 192.168.100.231/4096 forwarded api.flair.co to 8.8.8.8"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:03 dnsmasq[2042]: 34427 192.168.100.231/4096 reply api.flair.co is <CNAME>"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:03 dnsmasq[2042]: 34427 192.168.100.231/4096 reply flair-alb-prod-1666541247.us-east-1.elb.amazonaws.com is 34.228.95.147"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:03 dnsmasq[2042]: 34427 192.168.100.231/4096 reply flair-alb-prod-1666541247.us-east-1.elb.amazonaws.com is 54.152.59.183"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:03 dnsmasq[2042]: 34428 192.168.50.245/60502 query[A] e117933.a.akamaiedge.net from 192.168.50.245"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:03 dnsmasq[2042]: 34428 192.168.50.245/60502 forwarded e117933.a.akamaiedge.net to 8.8.8.8"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:03 dnsmasq[2042]: 34428 192.168.50.245/60502 reply e117933.a.akamaiedge.net is 104.114.79.57"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:03 dnsmasq[2042]: 34428 192.168.50.245/60502 reply e117933.a.akamaiedge.net is 104.114.79.73"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:03 dnsmasq[2042]: 34428 192.168.50.245/60502 reply e117933.a.akamaiedge.net is 104.114.79.67"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:03 dnsmasq[2042]: 34428 192.168.50.245/60502 reply e117933.a.akamaiedge.net is 104.114.79.81"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:03 dnsmasq[2042]: 34428 192.168.50.245/60502 reply e117933.a.akamaiedge.net is 104.114.79.83"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:03 dnsmasq[2042]: 34428 192.168.50.245/60502 reply e117933.a.akamaiedge.net is 104.114.79.64"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:03 dnsmasq[2042]: 34428 192.168.50.245/60502 reply e117933.a.akamaiedge.net is 104.114.79.59"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:03 dnsmasq[2042]: 34428 192.168.50.245/60502 reply e117933.a.akamaiedge.net is 104.114.79.65"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:03 dnsmasq[2042]: 34428 192.168.50.245/60502 reply e117933.a.akamaiedge.net is 104.114.79.89"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:03 dnsmasq[2042]: 34429 192.168.100.126/4096 query[A] my.flair.co from 192.168.100.126"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:03 dnsmasq[2042]: 34429 192.168.100.126/4096 cached my.flair.co is <CNAME>"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:03 dnsmasq[2042]: 34429 192.168.100.126/4096 forwarded my.flair.co to 8.8.8.8"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:03 dnsmasq[2042]: 34429 192.168.100.126/4096 reply my.flair.co is <CNAME>"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:03 dnsmasq[2042]: 34429 192.168.100.126/4096 reply d2qgwlspr10pij.cloudfront.net is 54.230.19.66"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:03 dnsmasq[2042]: 34429 192.168.100.126/4096 reply d2qgwlspr10pij.cloudfront.net is 54.230.19.120"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:03 dnsmasq[2042]: 34429 192.168.100.126/4096 reply d2qgwlspr10pij.cloudfront.net is 54.230.19.27"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:03 dnsmasq[2042]: 34429 192.168.100.126/4096 reply d2qgwlspr10pij.cloudfront.net is 54.230.19.93"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:04 dnsmasq[2042]: 34430 192.168.50.245/51529 query[AAAA] star-mini.c10r.facebook.com from 192.168.50.245"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:04 dnsmasq[2042]: 34430 192.168.50.245/51529 forwarded star-mini.c10r.facebook.com to 8.8.8.8"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:04 dnsmasq[2042]: 34431 192.168.50.245/61181 query[A] star-mini.c10r.facebook.com from 192.168.50.245"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:04 dnsmasq[2042]: 34431 192.168.50.245/61181 forwarded star-mini.c10r.facebook.com to 8.8.8.8"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:04 dnsmasq[2042]: 34431 192.168.50.245/61181 reply star-mini.c10r.facebook.com is 157.240.2.35"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:04 dnsmasq[2042]: 34430 192.168.50.245/51529 reply star-mini.c10r.facebook.com is 2a03:2880:f127:83:face:b00c:0:25de"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:04 dnsmasq[2042]: 34432 192.168.50.245/61282 query[AAAA] star.c10r.facebook.com from 192.168.50.245"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:04 dnsmasq[2042]: 34432 192.168.50.245/61282 forwarded star.c10r.facebook.com to 8.8.8.8"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:04 dnsmasq[2042]: 34433 192.168.50.245/52125 query[A] star.c10r.facebook.com from 192.168.50.245"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:04 dnsmasq[2042]: 34433 192.168.50.245/52125 forwarded star.c10r.facebook.com to 8.8.8.8"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:04 dnsmasq[2042]: 34432 192.168.50.245/61282 reply star.c10r.facebook.com is 2a03:2880:f027:13:face:b00c:0:2"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:04 dnsmasq[2042]: 34433 192.168.50.245/52125 reply star.c10r.facebook.com is 157.240.2.20"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:06 dnsmasq[2042]: 34434 192.168.50.245/61534 query[AAAA] capi.samsungcloud.com from 192.168.50.245"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:06 dnsmasq[2042]: 34434 192.168.50.245/61534 forwarded capi.samsungcloud.com to 8.8.8.8"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:06 dnsmasq[2042]: 34435 192.168.50.245/60687 query[A] capi.samsungcloud.com from 192.168.50.245"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:06 dnsmasq[2042]: 34435 192.168.50.245/60687 forwarded capi.samsungcloud.com to 8.8.8.8"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:06 dnsmasq[2042]: 34435 192.168.50.245/60687 reply capi.samsungcloud.com is 34.215.8.196"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:06 dnsmasq[2042]: 34435 192.168.50.245/60687 reply capi.samsungcloud.com is 35.82.52.9"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:06 dnsmasq[2042]: 34435 192.168.50.245/60687 reply capi.samsungcloud.com is 34.215.196.52"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:06 dnsmasq[2042]: 34435 192.168.50.245/60687 reply capi.samsungcloud.com is 44.238.213.121"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:06 dnsmasq[2042]: 34435 192.168.50.245/60687 reply capi.samsungcloud.com is 44.238.183.124"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:06 dnsmasq[2042]: 34435 192.168.50.245/60687 reply capi.samsungcloud.com is 35.162.109.24"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:06 dnsmasq[2042]: 34435 192.168.50.245/60687 reply capi.samsungcloud.com is 35.80.149.27"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:06 dnsmasq[2042]: 34435 192.168.50.245/60687 reply capi.samsungcloud.com is 35.165.15.40"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:06 dnsmasq[2042]: 34434 192.168.50.245/61534 reply capi.samsungcloud.com is NODATA-IPv6"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:07 dnsmasq[2042]: 34436 192.168.100.63/4096 query[A] api.flair.co from 192.168.100.63"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:07 dnsmasq[2042]: 34436 192.168.100.63/4096 cached api.flair.co is <CNAME>"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:07 dnsmasq[2042]: 34436 192.168.100.63/4096 cached flair-alb-prod-1666541247.us-east-1.elb.amazonaws.com is 54.152.59.183"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 16:50:07 dnsmasq[2042]: 34436 192.168.100.63/4096 cached flair-alb-prod-1666541247.us-east-1.elb.amazonaws.com is 34.228.95.147"
+      }
     }
   ]
-}
-
+}n
