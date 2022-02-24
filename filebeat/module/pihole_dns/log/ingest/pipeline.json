@@ -1,11 +1,110 @@
+POST /_ingest/pipeline/_simulate
 {
-  "description": "Pipeline for parsing pihole_dns log logs",
-  "processors": [
+  "pipeline": {
+    "description": "_description",
+    "processors": [
+      {
+        "set": {
+          "field": "event.ingested",
+          "value": "{{_ingest.timestamp}}"
+        }
+      },
+      {
+        "grok": {
+          "description": "Parse the header and timestamp",
+          "field": "message",
+          "patterns": [
+            """%{PIHOLEHEADER}:\s+%{GREEDYDATA:log.original}"""
+          ],
+          "pattern_definitions": {
+            "PIHOLEHEADER": """%{SYSLOGTIMESTAMP:_temp_.raw_date}\s+%{SYSLOGPROG}"""
+          },
+          "ecs_compatibility": "v1"
+        }
+      },
+      {
+        "grok": {
+          "field": "log.original",
+          "patterns": ["""%{INT:serial}"""],
+          "pattern_definitions": {
+            
+          },
+          "ecs_compatibility": "v1"
+        }
+      },
+      {
+        "date": {
+          "if": "ctx.event?.timezone == null && ctx._temp_?.raw_date != null",
+          "field": "_temp_.raw_date",
+          "target_field": "@timestamp",
+          "formats": [
+            "ISO8601",
+            "MMM  d HH:mm:ss",
+            "MMM dd HH:mm:ss",
+            "EEE MMM  d HH:mm:ss",
+            "EEE MMM dd HH:mm:ss",
+            "MMM  d HH:mm:ss z",
+            "MMM dd HH:mm:ss z",
+            "EEE MMM  d HH:mm:ss z",
+            "EEE MMM dd HH:mm:ss z",
+            "MMM  d yyyy HH:mm:ss",
+            "MMM dd yyyy HH:mm:ss",
+            "EEE MMM  d yyyy HH:mm:ss",
+            "EEE MMM dd yyyy HH:mm:ss",
+            "MMM  d yyyy HH:mm:ss z",
+            "MMM dd yyyy HH:mm:ss z",
+            "EEE MMM  d yyyy HH:mm:ss z",
+            "EEE MMM dd yyyy HH:mm:ss z"
+          ],
+          "on_failure": [
+            {
+              "append": {
+                "field": "error.message",
+                "value": "{{ _ingest.on_failure_message }}"
+              }
+            }
+          ]
+        }
+      }
     ],
-  "on_failure" : [{
-    "set" : {
-      "field" : "error.message",
-      "value" : "{{ _ingest.on_failure_message }}"
+    "on_failure": [
+      {
+        "set": {
+          "field": "error.message",
+          "value": "{{ _ingest.on_failure_message }}"
+        }
+      }
+    ]
+  },
+  "docs": [
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 07:00:28 dnsmasq[320]: 4361 192.168.100.30/55067 forwarded api.st-av.net to 8.8.4.4"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 23 08:28:09 dnsmasq[16652]: started, version pi-hole-2.87test8 cachesize 10000"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 07:00:28 dnsmasq[320]: 4362 192.168.100.231/4096 query[A] api.flair.co from 192.168.100.231"
+      }
+    },
+    {
+      "_index": "index",
+      "_id": "id",
+      "_source": {
+        "message": "Feb 24 00:00:59 dnsmasq[23417]: 14771 192.168.100.179/56135 gravity blocked scribe.logs.roku.com is 0.0.0.0"
+      }
     }
-  }]
+  ]
 }
+
