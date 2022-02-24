@@ -1,0 +1,3 @@
+dashboards:
+- id: Filebeat-pihole_dns-log-Dashboard
+  file: Filebeat-pihole_dns-log.json

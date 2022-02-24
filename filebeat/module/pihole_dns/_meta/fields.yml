@@ -1,0 +1,9 @@
+- key: pihole_dns
+  title: "pihole_dns"
+  description: >
+    pihole_dns Module
+  fields:
+    - name: pihole_dns
+      type: group
+      description: >
+      fields:
