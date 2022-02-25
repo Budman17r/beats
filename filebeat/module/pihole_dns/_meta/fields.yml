@@ -7,3 +7,7 @@
       type: group
       description: >
       fields:
+        - name: continent_name
+          type: alias
+          path: source.geo.continent_name
+          migration: true

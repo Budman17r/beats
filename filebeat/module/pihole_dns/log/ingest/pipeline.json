@@ -1,5 +1,4 @@
 {
-  "pipeline": {
     "description": "_description",
     "processors": [
       {
@@ -13,10 +12,10 @@
           "description": "Parse the header and timestamp",
           "field": "message",
           "patterns": [
-            """%{PIHOLEHEADER}:\s+%{GREEDYDATA:log.original}"""
+            "%{PIHOLEHEADER}:\\s+%{GREEDYDATA:log.original}"
           ],
           "pattern_definitions": {
-            "PIHOLEHEADER": """%{SYSLOGTIMESTAMP:_temp_.raw_date}\s+%{SYSLOGPROG}"""
+            "PIHOLEHEADER": "%{SYSLOGTIMESTAMP:_temp_.raw_date}\\s+%{SYSLOGPROG}"
           },
           "ecs_compatibility": "v1"
         }
@@ -28,10 +27,10 @@
             "%{PIHOLEDNSLOGLINE}"
           ],
           "pattern_definitions": {
-            "PIHOLEDNSLOGLINE": """%{INT:serial}\s+%{IP:source.ip}/%{INT:source.port}\s+%{PIHOLEDNSRESPONSE:dns.op_code}\s+%{GREEDYDATA:dns.question.name}\s(to|from|is)\s""",
-            "PIHOLEDNSRESPONSE": """reply|query\[.*?\]|forwarded|cached|gravity\sblocked""",
-            "PIHOLERESOLVED": """%{PIHOLECNAME:dns.answers.name}|%{IP:dns.resolved_ip""",
-            "PIHOLECNAME": """<CNAME>"""
+            "PIHOLEDNSLOGLINE": "%{INT:serial}\\s+%{IP:source.ip}/%{INT:source.port}\\s+%{PIHOLEDNSRESPONSE:dns.op_code}\\s+%{GREEDYDATA:dns.question.name}\\s(to|from|is)\\s",
+            "PIHOLEDNSRESPONSE": "reply|query\\[.*?\\]|forwarded|cached|gravity\\sblocked",
+            "PIHOLERESOLVED": "%{PIHOLECNAME:dns.answers.name}|%{IP:dns.resolved_ip",
+            "PIHOLECNAME": "<CNAME>"
           },
           "ecs_compatibility": "v1",
           "trace_match": true
@@ -80,6 +79,4 @@
         }
       }
     ]
-  }
 }
-

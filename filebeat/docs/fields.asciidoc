@@ -70,6 +70,7 @@ grouped in the following categories:
 * <<exported-fields-osquery>>
 * <<exported-fields-panw>>
 * <<exported-fields-pensando>>
+* <<exported-fields-pihole_dns>>
 * <<exported-fields-postgresql>>
 * <<exported-fields-process>>
 * <<exported-fields-proofpoint>>
@@ -113237,6 +113238,28 @@ Timestamp of the log.
 
 
 type: date
+
+--
+
+[[exported-fields-pihole_dns]]
+== pihole_dns fields
+
+pihole_dns Module
+
+
+
+[float]
+=== pihole_dns
+
+
+
+
+*`pihole_dns.continent_name`*::
++
+--
+type: alias
+
+alias to: source.geo.continent_name
 
 --
 
